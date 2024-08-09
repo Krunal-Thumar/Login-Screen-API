@@ -1,8 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Login from './Components/Login/Login';
-import Courses from './Components/Courses/Courses';
 import './App.css';
+import User from './Components/Testing/User';
 
 /**
 const App = () => {
@@ -16,12 +14,15 @@ const App = () => {
 
 const App = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" exact element={<Login />} />
-        <Route path="/faculty/:username/courses" element={<Courses />} />
-      </Routes>
-    </Router>
+    // <Router>
+    //   <Routes>
+    //     <Route path="/" exact element={<Login />} />
+    //     <Route path="/faculty/:username/courses" element={<Courses />} />
+    //   </Routes>
+    // </Router>
+    <div className='App'>
+      <User />
+    </div>
   );
 };
 

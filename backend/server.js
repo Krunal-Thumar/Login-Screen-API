@@ -40,6 +40,20 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.post('/api/adduser', async (req, res) => {
+    const { username, password } = req.body;
+
+    try{
+        //use bcrypt to hash the password here and enter that password in the db
+        const hashedPassword = '';
+        const result = await pool.query("INSERT into instructor (ins_name, username, is_adjunct, is_admin, has_left, password) VALUES ('testuser', $1, 'N', 'N', 'N', $2 )", [username, hashedPassword]);
+
+    } catch(error) {
+        console.error(error);
+        res.status(500).send('Server Error');
+    }
+});
+
 // API endpoint to fetch courses for the login authenticated faculty member
 /**=
 app.get('/api/faculty/:username/courses', async (req, res) => {
