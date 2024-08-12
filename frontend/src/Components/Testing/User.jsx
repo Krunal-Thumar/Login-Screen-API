@@ -55,7 +55,7 @@ const UserForm = () => {
           required
         />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit">Create</button>
     </form>
   );
 };
