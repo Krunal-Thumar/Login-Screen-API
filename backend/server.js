@@ -5,6 +5,8 @@ const axios = require('axios');
 
 const app = express();
 const port = 5001;
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // Number of salt rounds for bcrypt
 
 app.use(cors());
 app.use(express.json());
@@ -24,15 +26,43 @@ app.get('/', (req, res) => {
 })
 
 // API endpoint to validate login
+// app.post('/api/login', async (req, res) => {
+//     const { username, password } = req.body;
+//     try {
+//         const result = await pool.query('SELECT * FROM instructor WHERE username = $1 AND password = $2', [username, password]);
+//         if (result.rows.length > 0) {
+//             const professorName = result.rows[0].ins_name; // 'ins_name' is the column name for faculty's name
+//             res.json({ message: `Hello ${professorName}`});
+//         } else {
+//             res.status(401).json({ message: 'Sorry! Login Incorrect'});
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Server Error');
+//     }
+// });
+
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
+
     try {
-        const result = await pool.query('SELECT * FROM instructor WHERE username = $1 AND password = $2', [username, password]);
+        // Query the database to find the user by username
+        const result = await pool.query('SELECT * FROM instructor WHERE username = $1', [username]);
+
         if (result.rows.length > 0) {
-            const professorName = result.rows[0].ins_name; // 'ins_name' is the column name for faculty's name
-            res.json({ message: `Hello ${professorName}`});
+            const user = result.rows[0];
+
+            // Compare the provided password with the stored hashed password
+            const match = await bcrypt.compare(password, user.password);
+
+            if (match) {
+                const professorName = user.ins_name; // 'ins_name' is the column name for the faculty's name
+                res.json({ message: `Hello ${professorName}` });
+            } else {
+                res.status(401).json({ message: 'Sorry! Login Incorrect' });
+            }
         } else {
-            res.status(401).json({ message: 'Sorry! Login Incorrect'});
+            res.status(401).json({ message: 'Sorry! Login Incorrect' });
         }
     } catch (error) {
         console.error(error);
@@ -45,10 +75,11 @@ app.post('/api/adduser', async (req, res) => {
 
     try{
         //use bcrypt to hash the password here and enter that password in the db
-        const hashedPassword = '';
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
         const result = await pool.query("INSERT into instructor (ins_name, username, is_adjunct, is_admin, has_left, password) VALUES ('testuser', $1, 'N', 'N', 'N', $2 )", [username, hashedPassword]);
+        res.status(201).json({ message: 'User added successfully' });
 
-    } catch(error) {
+    } catch(error) {    
         console.error(error);
         res.status(500).send('Server Error');
     }
