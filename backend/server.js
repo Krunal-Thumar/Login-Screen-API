@@ -76,6 +76,7 @@ app.post('/api/adduser', async (req, res) => {
     try{
         //use bcrypt to hash the password here and enter that password in the db
         const hashedPassword = await bcrypt.hash(password, saltRounds);
+        console.log(hashedPassword);
         const result = await pool.query("INSERT into instructor (ins_name, username, is_adjunct, is_admin, has_left, password) VALUES ('testuser', $1, 'N', 'N', 'N', $2 )", [username, hashedPassword]);
         res.status(201).json({ message: 'User added successfully' });
 

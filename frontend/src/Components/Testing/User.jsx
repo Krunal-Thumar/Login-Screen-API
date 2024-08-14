@@ -15,7 +15,7 @@ const UserForm = () => {
     console.log(userDetails);
 
     try {
-      const response = await fetch('https://localhost:5001/api/adduser', {
+      const response = await fetch('http://localhost:5001/api/adduser', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
